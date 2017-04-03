@@ -1,21 +1,39 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import store from './store'
+import {displayItem} from './api/products'
 
-class App extends Component {
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+       products: {}
+      }
+    }
+  componentWillMount(){
+    this.unsubscribe = store.subscribe(()=>{
+      const appState = store.getState()
+
+      this.setState({
+        products: appState.products
+      })
+    })
+    displayItem()
+
+  }
+  componentWillUnmount(){
+    this.unsubscribe
+  }
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        {this.state.products.map(item=>(
+              <div key={'item' + item.listing_id}>
+                  <img src={item.images[0].url_570xN} alt={item.title} />
+              </div>
+            ))}
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App
