@@ -1,32 +1,33 @@
 import React from 'react'
 import store from './store'
-import {displayItem} from './api/products'
+import {getData} from './api/products'
 
 class App extends React.Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
        products: {}
       }
     }
-  componentWillMount(){
+  componentWillMount() {
+
     this.unsubscribe = store.subscribe(()=>{
       const appState = store.getState()
-
       this.setState({
-        products: appState.products
+        products: appState
       })
+      getData()
     })
-    displayItem()
-
   }
-  componentWillUnmount(){
-    this.unsubscribe
+  componentWillUnmount() {
+    this.unsubscribe()
   }
   render() {
+    console.log(store.getState())
+    console.log(this.state)
     return (
       <div>
-        {this.state.products.map(item=>(
+            {this.state.products.items.map(item=>(
               <div key={'item' + item.listing_id}>
                   <img src={item.images[0].url_570xN} alt={item.title} />
               </div>
